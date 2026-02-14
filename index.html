@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>question for you…</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #ffeef8 0%, #ffe6f0 50%, #ffd6e8 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 50px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+    
+        @keyframes float {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(100vh); }
+        }
+
+        h1 {
+            font-size: 48px;
+            color: #d63384;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            animation: fadeIn 1s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        button {
+            padding: 15px 35px;
+            font-size: 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Georgia', serif;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+        }
+
+        #yesBtn {
+            background: linear-gradient(135deg, #ff4d6d 0%, #ff1744 100%);
+            color: white;
+        }
+
+        #yesBtn:hover {
+            background: linear-gradient(135deg, #ff1744 0%, #ff4d6d 100%);
+        }
+
+        #noBtn {
+            background: linear-gradient(135deg, #e0e0e0 0%, #bdbdbd 100%);
+            color: #666;
+        }
+
+        #noBtn:hover {
+            background: linear-gradient(135deg, #bdbdbd 0%, #e0e0e0 100%);
+        }
+
+        #slideshow {
+            margin-top: 30px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        #buttons {
+            display: none;
+            margin-top: 30px;
+            animation: fadeIn 0.8s ease-in;
+        }
+
+        #message {
+            display: none;
+            font-size: 32px;
+            color: #ff4d6d;
+            margin-top: 30px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            animation: heartbeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        #startBtn {
+            background: linear-gradient(135deg, #ff4d6d 0%, #ff1744 100%);
+            color: white;
+            padding: 20px 50px;
+            font-size: 26px;
+            margin-top: 30px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        #startBtn:hover {
+            background: linear-gradient(135deg, #ff1744 0%, #ff4d6d 100%);
+            animation: none;
+        }
+
+        img, video {
+            max-width: 90%;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            border: 5px solid white;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>Will you be my valentine? </h1>
+
+<button id="startBtn">Start ❤️</button>
+
+<div id="slideshow"></div>
+
+<div id="buttons">
+    <button id="yesBtn">Yes</button>
+    <button id="noBtn">No</button>
+</div>
+
+<div id="message"></div>
+
+<audio id="music" src="music.m4a"></audio>
+
+<script>
+    const slideshow = document.getElementById("slideshow");
+    const buttons = document.getElementById("buttons");
+    const yesBtn = document.getElementById("yesBtn");
+    const noBtn = document.getElementById("noBtn");
+    const message = document.getElementById("message");
+    const music = document.getElementById("music");
+    const startBtn = document.getElementById("startBtn");
+
+    // Put your files in order here
+    const media = [
+        { type: "image", src: "IMG_0008.HEIC", duration: 2000 },
+        { type: "video", src: "IMG_0179.MOV" },
+        { type: "image", src: "IMG_7797.JPG", duration: 2000 },
+        { type: "video", src: "IMG_6390.MP4" },
+        { type: "image", src: "IMG_6353.JPG", duration: 2000 },
+        { type: "image", src: "IMG_8613.JPG", duration: 2000 },
+        { type: "video", src: "IMG_0194.MOV" },
+        { type: "image", src: "IMG_0126.JPG", duration: 2000 },
+        { type: "image", src: "IMG_2055.JPG", duration: 2000 },
+        { type: "image", src: "IMG_0394.JPG", duration: 2000 },
+        { type: "video", src: "IMG_2497.MOV" },
+        { type: "image", src: "IMG_0243.JPG", duration: 2000 }
+    ];
+
+    let currentIndex = 0;
+
+    // Start slideshow when start button is clicked
+    startBtn.onclick = function() {
+        console.log("Start button clicked!");
+        startBtn.style.display = "none";
+        music.play().catch(err => console.log("Music error:", err));
+        showNext();
+    };
+
+    function showNext() {
+        console.log("Showing item:", currentIndex);
+        
+        if (currentIndex >= media.length) {
+            // Slideshow finished, show buttons
+            console.log("Slideshow finished!");
+            slideshow.style.display = "none";
+            buttons.style.display = "block";
+            return;
+        }
+
+        slideshow.innerHTML = "";
+
+        const item = media[currentIndex];
+        console.log("Current item:", item);
+
+        if (item.type === "image") {
+            const img = document.createElement("img");
+            img.src = item.src;
+            img.onerror = function() {
+                console.log("Image failed to load:", item.src);
+    
+                currentIndex++;
+                showNext();
+            };
+            img.onload = function() {
+                console.log("Image loaded:", item.src);
+            };
+            slideshow.appendChild(img);
+
+            setTimeout(() => {
+                currentIndex++;
+                showNext();
+            }, item.duration);
+        }
+
+        if (item.type === "video") {
+            const video = document.createElement("video");
+            video.src = item.src;
+            video.autoplay = true;
+            video.muted = false;
+            video.playsInline = true;
+            video.onerror = function() {
+                console.log("Video failed to load:", item.src);
+                // Skip to next item if video fails
+                currentIndex++;
+                showNext();
+            };
+            video.onloadeddata = function() {
+                console.log("Video loaded:", item.src);
+            };
+            video.onended = () => {
+                console.log("Video ended:", item.src);
+                currentIndex++;
+                showNext();
+            };
+            slideshow.appendChild(video);
+        }
+    }
+
+    yesBtn.onclick = function() {
+        buttons.style.display = "none";
+        message.style.display = "block";
+        message.innerHTML = "I love you! <br>Happy Valentine's Day! 💖";
+    };
+
+    noBtn.onclick = function() {
+        // Show popup message
+        alert("Oops! You need to watch the slideshow again! 💕");
+        
+        // Restart the slideshow
+        currentIndex = 0;
+        buttons.style.display = "none";
+        slideshow.style.display = "block";
+        message.style.display = "none";
+        
+        // Restart music from the beginning
+        music.currentTime = 0;
+        music.play().catch(err => console.log("Music error:", err));
+        
+        showNext();
+    };
+</script>
+
+</body>
+</html>
